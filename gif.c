@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <unistd.h>
 
 #define HEAD_SIZE   13
 #define GEX_SIZE     8
@@ -250,20 +251,28 @@ void pics_write(uint16_t delay, int loop, int n, char * fnames[], FILE * fout){
 }
 
 int main(int argc, char * argv[]){
-  if(argc<4){
+  if(argc<3){
+    printf("usage: %s [options] input1.gif [input2.gif ... inputN.gif] output.gif\n", argv[0]);
+    printf("options:\n  -d %%d -- delay\n  -l -- loop\n");
     return 1;
   }
-  FILE * fout = fopen(argv[argc-1], "w");
-  int   delay = atoi(argv[1]);
-  int   loop  = 0;
-  if(delay<0){
-    delay = -delay;
-    loop = 1;
-  }
+
+  int n, delay=1, loop=0;
+  while ( ( n = getopt(argc, argv, "d:l")) != -1){
+    switch (n){
+      case 'd':
+        delay = atoi(optarg);
+        break;
+      case 'l':
+        loop = 1;
+    };
+  };
   if(delay<1){
     delay = 1;
   }
-  pics_write(delay, loop, argc-3, argv+2, fout);
+
+  FILE * fout = fopen(argv[argc-1], "w");
+  pics_write(delay, loop, argc-optind-1, argv+optind, fout);
   fclose(fout);
   return 0;
 }

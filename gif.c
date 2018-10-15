@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -221,12 +220,25 @@ void pic_free(picture pic){
   free(pic.data);
 }
 
-void pics_write(uint16_t delay, int n, char * fnames[], FILE * fout){
+void pics_write(uint16_t delay, int loop, int n, char * fnames[], FILE * fout){
   for(int i=0; i<n; i++){
     picture pic = pic_read(fnames[i]);
     uint8_t hf  = head_cl(&pic);
     if(i==0){
+      pic.head[4] = '9'; // GIF87a -> GIF89a
       fwrite(pic.head, HEAD_SIZE, 1, fout);
+      if(loop){
+        int8_t pex[] = {
+          0x21, 0xFF, // программное расширение
+          0x0B,       // размер последующего блока
+          'N', 'E', 'T', 'S', 'C', 'A', 'P', 'E', '2', '.', '0',
+          0x03,       // размер последующего блока
+          0x01,       // фиксировано
+          0x00, 0x00, // число повторов (little-endian)
+          0x00        // конец
+        };
+        fwrite(pex, sizeof(pex), 1, fout);
+      }
     }
     frame_write(pic, delay, hf, fout);
     if(i==n-1){
@@ -243,10 +255,15 @@ int main(int argc, char * argv[]){
   }
   FILE * fout = fopen(argv[argc-1], "w");
   int   delay = atoi(argv[1]);
+  int   loop  = 0;
+  if(delay<0){
+    delay = -delay;
+    loop = 1;
+  }
   if(delay<1){
     delay = 1;
   }
-  pics_write(delay, argc-3, argv+2, fout);
+  pics_write(delay, loop, argc-3, argv+2, fout);
   fclose(fout);
   return 0;
 }

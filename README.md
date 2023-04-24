@@ -17,6 +17,7 @@ Options:
 ```
 
 ## Example
+Animate one of C₆H₁₂'s vibrational modes:
 ```
 ./gif data/*.gif out.gif -l
 ```

@@ -252,8 +252,10 @@ void pics_write(uint16_t delay, int loop, int n, char * fnames[], FILE * fout){
 
 int main(int argc, char * argv[]){
   if(argc<3){
-    printf("usage: %s [options] input1.gif [input2.gif ... inputN.gif] output.gif\n", argv[0]);
-    printf("options:\n  -d %%d -- delay\n  -l -- loop\n");
+    printf("Usage: %s [OPTIONS] INPUTFILE_1 [INPUTFILE_2 ... INPUTFILE_N] OUTFILE\n\n\
+Options:\n\
+  -d NUM    delay between frames in 1/100s, default 1\n\
+  -l        loop the animation\n", argv[0]);
     return 1;
   }
 

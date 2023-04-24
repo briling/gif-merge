@@ -21,4 +21,6 @@ Animate one of C₆H₁₂'s vibrational modes:
 ```
 ./gif data/*.gif out.gif -l
 ```
+The frames were produced with [`v`](https://github.com/briling/v)
+and converted from `.xpm` to `.gif` with [`ImageMagick`](https://imagemagick.org/index.php).
 ![Animated gif](data/out.gif)

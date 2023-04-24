@@ -230,13 +230,13 @@ void pics_write(uint16_t delay, int loop, int n, char * fnames[], FILE * fout){
       fwrite(pic.head, HEAD_SIZE, 1, fout);
       if(loop){
         int8_t pex[] = {
-          0x21, 0xFF, // программное расширение
-          0x0B,       // размер последующего блока
+          0x21, 0xFF, // magic number
+          0x0B,       // next block size
           'N', 'E', 'T', 'S', 'C', 'A', 'P', 'E', '2', '.', '0',
-          0x03,       // размер последующего блока
-          0x01,       // фиксировано
-          0x00, 0x00, // число повторов (little-endian)
-          0x00        // конец
+          0x03,       // next block size
+          0x01,       // fixed
+          0x00, 0x00, // number of repeats (little-endian)
+          0x00        // end
         };
         fwrite(pex, sizeof(pex), 1, fout);
       }
